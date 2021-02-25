@@ -1,0 +1,2 @@
+# MSCrypt
+My Encryption Algorithm
