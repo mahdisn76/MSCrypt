@@ -4,7 +4,7 @@
 #include "MSCrypt.h"
 using namespace std;
 
-int main()
+int maina()
 {
 	MSCrypt mscrpyt("1010101010111011111010010001100000100111001101101100110011000101");
 	
@@ -23,4 +23,15 @@ int main()
 	cout << countDifferentBits(cipher1, cipher2) << "bits" << endl;
 	   
 	return 0;
-}	
+}
+
+int main()
+{
+	MSCrypt mscrypt("1010101010111011111010010001100000100111001101101100110011000101",
+					"98765432102136457098AB23FF", Mode::OFB);
+
+	auto c = mscrypt.enc("AAAAAAFF1111123456123456123456FF1234123412345656123456FF1234123456123456");
+	cout << "cipher: " << c << endl;
+	cout << "plain:  " << mscrypt.dec(c) << endl;
+	return 0;
+}

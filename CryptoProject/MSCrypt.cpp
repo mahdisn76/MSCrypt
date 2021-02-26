@@ -3,9 +3,9 @@
 #include "utilities.h"
 using namespace std;
 
-MSCrypt::MSCrypt(std::string key)
+MSCrypt::MSCrypt(std::string key, std::string IV, Mode mode):
+	key_(key), IV_(IV), mode_(mode)
 {
-	key_ = key;
 	rkGen_ = make_unique<RoundKeyGenerator>(key_);
 }
 
@@ -58,7 +58,7 @@ uint32_t MSCrypt::F(uint32_t in, uint32_t roundKey)
 }
 
 
-string MSCrypt::enc(string plain)
+string MSCrypt::enc_block(string plain)
 {
 	uint32_t p1, p2, p3;
 	divide(plain, p1, p2, p3);
@@ -76,7 +76,7 @@ string MSCrypt::enc(string plain)
 	return merge(p1, p2, p3);
 }
 
-string MSCrypt::dec(string cipher)
+string MSCrypt::dec_block(string cipher)
 {
 	uint32_t p1, p2, p3;
 	divide(cipher, p1, p2, p3);
@@ -94,4 +94,35 @@ string MSCrypt::dec(string cipher)
 	}
 
 	return merge(p1, p2, p3);
+}
+
+string MSCrypt::enc(string plain)
+{
+	if (mode_ == Mode::Block)
+		return enc_block(plain);
+
+	return ofb(plain);
+}
+
+string MSCrypt::dec(string cipher)
+{
+	if (mode_ == Mode::Block)
+		return dec_block(cipher);
+
+	return ofb(cipher);
+}
+
+string MSCrypt::ofb(string text)
+{
+	vector<string> plains = split(text, 24);
+	MSCrypt mscrpyt(key_);
+	string output_text = "", in = IV_;
+	
+	for (auto plain : plains)
+	{
+		in = mscrpyt.enc(in);
+		output_text += XOR(IV_, plain);
+	}
+
+	return output_text;
 }

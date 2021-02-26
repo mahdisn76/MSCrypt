@@ -107,3 +107,23 @@ size_t countDifferentBits(string h1, string h2)
 
 	return countOneBits(~(a1 ^ b1)) + countOneBits(~(a2 ^ b2)) + countOneBits(~(a3 ^ b3));
 }
+
+vector<string> split(string text, size_t length)
+{
+	vector<string> ret;
+	const auto blocks_count = ceil((double)text.size() / length);
+
+	for (int i = 0; i < blocks_count; ++i)
+		ret.push_back(text.substr(i * length, length));
+
+	return ret;
+}
+
+string XOR(string a, string b)
+{
+	uint32_t a1, a2, a3, b1, b2, b3;
+	divide(a, a1, a2, a3);
+	divide(b, b1, b2, b3);
+
+	return merge(a1 ^ b1, a2 ^ b2, a3 ^ b3);
+}
