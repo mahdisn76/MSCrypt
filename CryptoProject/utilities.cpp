@@ -1,7 +1,7 @@
 #include "utilities.h"
-#include<sstream>
-#include<iomanip>
-
+#include <sstream>
+#include <iomanip>
+#include <random>
 using namespace std;
 
 string num_hex(uint8_t n)
@@ -126,4 +126,78 @@ string XOR(string a, string b)
 	divide(b, b1, b2, b3);
 
 	return merge(a1 ^ b1, a2 ^ b2, a3 ^ b3);
+}
+
+string hex_to_bin(string hex)
+{
+	string ret = "";
+
+	for (auto s : hex)
+	{
+		if (s == '0')
+			ret += "0000";
+		else if (s == '1')
+			ret += "0001";
+		else if (s == '2')
+			ret += "0010";
+		else if (s == '3')
+			ret += "0011";
+		else if (s == '4')
+			ret += "0100";
+		else if (s == '5')
+			ret += "0101";
+		else if (s == '6')
+			ret += "0110";
+		else if (s == '7')
+			ret += "0111";
+		else if (s == '8')
+			ret += "1000";
+		else if (s == '9')
+			ret += "1001";
+		else if (s == 'a')
+			ret += "1010";
+		else if (s == 'b')
+			ret += "1011";
+		else if (s == 'c')
+			ret += "1100";
+		else if (s == 'd')
+			ret += "1101";
+		else if (s == 'e')
+			ret += "1110";
+		else if (s == 'f')
+			ret += "1111";
+	}
+
+	return ret;
+}
+
+string generate_random_96_bit() //@TODO -> not a good random )":
+{
+	random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distrib(0, RAND_MAX);
+
+	return merge(distrib(gen), distrib(gen), distrib(gen));
+}
+
+uint32_t flip_bit(uint32_t in, int i)
+{
+	return in ^ (1 << i);
+}
+
+string flip_bit(string in, int i)
+{
+	uint32_t a[3];
+	divide(in, a[2], a[1], a[0]);
+
+	a[i / 32] = flip_bit(a[i / 32], i % 32);
+
+	return merge(a[2], a[1], a[0]);
+}
+
+void add(size_t mat[][96], int j, string r)
+{
+	for (auto i = 0; i < 96; i++)
+		if (r[i] == '1')
+			++mat[j][i];
 }
