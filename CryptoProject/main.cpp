@@ -21,19 +21,17 @@ void dec(string key, string cipher)
 	cout << "plain:  " << mscrpyt.dec(cipher) << endl;
 }
 
-void ofb()
+void ofb(string key, string IV, string text)
 {
-	MSCrypt mscrypt("1010101010111011111010010001100000100111001101101100110011000101",
-					"98765432102136457098AB23FF", Mode::OFB);
+	MSCrypt mscrypt(key, IV, Mode::OFB);
 
-	auto c = mscrypt.enc("AAAAAAFF1111123456123456123456FF1234123412345656123456FF1234123456123456");
-	cout << "cipher: " << c << endl;
-	cout << "plain:  " << mscrypt.dec(c) << endl;
+	cout << "text: " << text << endl;
+	cout << "plain/cipher: " << mscrypt.enc(text) << endl;
 }
 
-void completeness_avalanche_test(int m = 10000)
+void completeness_avalanche_test(const int m)
 {
-	MSCrypt mscrypt(hex_to_bin(generate_random_96_bit()));
+	MSCrypt mscrypt(generate_random_96_bit());
 
 	size_t mat[96][96] = { 0 };
 
@@ -61,14 +59,17 @@ void print_help()
 {
 	cout << "Welcome to MSCrypt.\nBy Mahdi Salmanzadeh @2021\nmdsalmanzadeh@gmail.com\n\n"
 		"Usage: mscript [enc|dec|ofb|test] [in] [options]\n"
-		"\nenc\t Encrypt a 96 bit block using a key\n"
-		"\t mscript enc -[b|h|f] [key] -[b|h|f] [block]\n"
-		"\ndec\t Decrypt a 96 bit block using a key\n"
-		"\t mscript dec -[b|h|f] [key] -[b|h|f] [block]\n"
-		"\nofb\t Encrypt/Decrypt a text in OFB mode using a key\n"
-		"\t mscript ofb -[b|h|f] [key] -[b|h|f] [block]\n"
-		"\ntest\t Perform completeness and strict avalanche criteria test.\n"
-		"\t mscript test [num_block=10000]\n";
+		"\nenc\t Encrypt a 96 bit block:\n"
+		"\t mscript enc key 96-bit-block\n"
+		"\t .\CryptoProject.exe enc 9182736591827365 123456FF1234123456123456\n"
+		"\ndec\t Decrypt a 96 bit block:\n"
+		"\t mscript dec key 96-bit-block\n"
+		"\t .\CryptoProject.exe dec 9182736591827365 2b7d947662bfc65d45ae3790\n"
+		"\nofb\t Encrypt/Decrypt a text in OFB mode:\n"
+		"\t mscript ofb key IV block\n"
+		"\ntest\t Perform completeness and strict avalanche criteria test:\n"
+		"\t mscript test [num_test_block=10000]\n"
+		"\n Note: Key is 64bit, IV is 96bit, Enter every value in hex.";
 }
 
 int main(int argc, char** argv)
@@ -80,14 +81,15 @@ int main(int argc, char** argv)
 	}
 
 	if (string(argv[1]) == "test")
-		completeness_avalanche_test();
-	else if (string(argv[1]) == "enc")
-		enc("1010101010111011111010010001100000100111001101101100110011000101", "123456FF1234123456123456");
-	else if (string(argv[1]) == "dec")
-		dec("1010101010111011111010010001100000100111001101101100110011000101", "c0a0cb2571dab5706e01db86");
-	else if (string(argv[1]) == "ofb")
-		ofb();
+		completeness_avalanche_test(argc == 3 ? stoi(argv[2]) : 10000);
+	else if (string(argv[1]) == "enc" && argc == 4)
+		enc(argv[2], argv[3]);
+	else if (string(argv[1]) == "dec" && argc == 4)
+		dec(argv[2], argv[3]);
+	else if (string(argv[1]) == "ofb" && argc == 5)
+		ofb(argv[2], argv[3], argv[4]);
 	else
 		print_help();
+
 	return 0;
 }
