@@ -32,17 +32,14 @@ uint8_t MSCrypt::sbox(uint8_t in)
 	return sbox[in];
 }
 
-uint32_t MSCrypt::pbox(uint32_t in)
+uint32_t MSCrypt::pbox(vector<uint8_t> in)
 {
-	constexpr size_t perm[32] = { 4, 28, 15, 3, 6, 29, 23, 9, 11, 30, 14, 31, 12, 10, 5, 24, 21, 13, 18, 2, 7, 26, 25, 22, 19, 16, 8, 0, 17, 1, 27, 20 };
+	auto y0 = in[1] ^ in[2] ^ in[3];
+	auto y1 = in[0] ^ in[2] ^ in[3];
+	auto y2 = in[0] ^ in[1] ^ in[3];
+	auto y3 = in[1] ^ in[2] ^ in[0];
 
-	uint32_t out = 0;
-	for (auto i = 0; i < 32; i++)
-	{
-		out |= ((in >> i) & 0b1) << perm[i];
-	}
-
-	return out;
+	return (y0 << 24) ^ (y1 << 16) ^ (y2 << 8) ^ y3;
 }
 
 uint32_t MSCrypt::F(uint32_t in, uint32_t roundKey)
@@ -54,7 +51,7 @@ uint32_t MSCrypt::F(uint32_t in, uint32_t roundKey)
 	for (auto i = 0; i < 4; i++)
 		parts[i] = sbox(parts[i]);
 
-	return pbox(merge(parts));
+	return pbox(parts);
 }
 
 

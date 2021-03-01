@@ -17,7 +17,7 @@ class MSCrypt
 	std::unique_ptr<RoundKeyGenerator> rkGen_;
 
 	uint8_t sbox(uint8_t in);
-	uint32_t pbox(uint32_t in);
+	uint32_t pbox(std::vector<uint8_t> in);
 	uint32_t F(uint32_t in, uint32_t roundKey);
 	std::string enc_block(std::string plain);
 	std::string dec_block(std::string cipher);
