@@ -43,6 +43,9 @@ std::string int_to_hex(uint32_t n)
 */
 void divide(string in, uint32_t& p1, uint32_t& p2, uint32_t& p3)
 {
+	const string zeros = "000000000000000000000000";
+	in = zeros.substr(0, 24 - in.length()) + in;
+
 	string s1 = in.substr(0, 8);
 	string s2 = in.substr(8, 8);
 	string s3 = in.substr(16, 8);
@@ -111,11 +114,18 @@ size_t countDifferentBits(string h1, string h2)
 vector<string> split(string text, size_t length)
 {
 	vector<string> ret;
-	const auto blocks_count = ceil((double)text.size() / length);
 
-	for (int i = 0; i < blocks_count; ++i)
-		ret.push_back(text.substr(i * length, length));
+	if (text.length() % length)
+	{
+		ret.push_back(text.substr(0, text.length() % length));
+		text = text.substr(text.length() % length);
+	}
 
+	while (text.length())
+	{
+		ret.push_back(text.substr(0, length));
+		text = text.substr(length);
+	}
 	return ret;
 }
 
@@ -209,4 +219,17 @@ void add(size_t mat[][96], int j, string r)
 	for (auto i = 0; i < 96; i++)
 		if (r[i] == '1')
 			++mat[j][i];
+}
+
+string remove_left_zeros(string s)
+{
+	int index = 0;
+
+	while (s[index] == '0' && index < s.length())
+		index++;
+
+	if (index == s.length())
+		return "0";
+
+	return s.substr(index);
 }

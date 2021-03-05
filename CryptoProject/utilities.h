@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <list>
 
 std::string num_hex(uint8_t n);
 
@@ -33,3 +34,5 @@ uint32_t flip_bit(uint32_t in, int i);
 std::string flip_bit(std::string in, int i);
 
 void add(size_t mat[][96], int j, std::string r);
+
+std::string remove_left_zeros(std::string);

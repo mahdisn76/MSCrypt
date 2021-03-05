@@ -8,19 +8,19 @@ using namespace std;
 void enc(string key, string plain)
 {
 	MSCrypt mscrpyt(stoull(key, nullptr, 16));
-	cout << mscrpyt.enc(plain) << endl;
+	cout << remove_left_zeros(mscrpyt.enc(plain)) << endl;
 }
 
 void dec(string key, string cipher)
 {
 	MSCrypt mscrpyt(stoull(key, nullptr, 16));
-	cout << mscrpyt.dec(cipher) << endl;
+	cout << remove_left_zeros(mscrpyt.dec(cipher)) << endl;
 }
 
 void ofb(string key, string IV, string text)
 {
 	MSCrypt mscrypt(stoull(key, nullptr, 16), IV, Mode::OFB);
-	cout << mscrypt.enc(text) << endl;
+	cout << remove_left_zeros(mscrypt.enc(text)) << endl;
 }
 
 void completeness_avalanche_test(const int m)
