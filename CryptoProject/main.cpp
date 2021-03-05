@@ -74,7 +74,7 @@ void print_help()
 		"\t .\\MSCrypt.exe enc 9182736591827365 123456FF1234123456123456\n"
 		"\ndec\t Decrypt a 96 bit block:\n"
 		"\t mscript dec key 96-bit-block\n"
-		"\t .\\MSCrypt.exe dec 9182736591827365 2b7d947662bfc65d45ae3790\n"
+		"\t .\\MSCrypt.exe dec 9182736591827365 c9fe73a6e8a4110294ac1cf2\n"
 		"\nofb\t Encrypt/Decrypt a text in OFB mode:\n"
 		"\t .\\MSCrypt.exe ofb key IV block\n"
 		"\nstream\t Create a random l-bit stream:\n"
