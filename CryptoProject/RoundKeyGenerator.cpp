@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
 #include "RoundKeyGenerator.h"
-using namespace std;
 
 constexpr auto LB64_MASK = 0x0000000000000001;
 
