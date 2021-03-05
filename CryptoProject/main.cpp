@@ -8,25 +8,19 @@ using namespace std;
 void enc(string key, string plain)
 {
 	MSCrypt mscrpyt(key);
-
-	cout << "plain:  " << plain << endl;
-	cout << "cipher: " << mscrpyt.enc(plain) << endl;
+	cout << mscrpyt.enc(plain) << endl;
 }
 
 void dec(string key, string cipher)
 {
 	MSCrypt mscrpyt(key);
-
-	cout << "cipher: " << cipher << endl;
-	cout << "plain:  " << mscrpyt.dec(cipher) << endl;
+	cout << mscrpyt.dec(cipher) << endl;
 }
 
 void ofb(string key, string IV, string text)
 {
 	MSCrypt mscrypt(key, IV, Mode::OFB);
-
-	cout << "text: " << text << endl;
-	cout << "plain/cipher: " << mscrypt.enc(text) << endl;
+	cout << mscrypt.enc(text) << endl;
 }
 
 void completeness_avalanche_test(const int m)
@@ -55,21 +49,39 @@ void completeness_avalanche_test(const int m)
 			cout << mat[i][j] << (j == 95 ? "\n" : " ");
 }
 
+void stream(size_t len)
+{
+	auto key = generate_random_96_bit();
+	string plain = generate_random_96_bit();
+
+	MSCrypt mscrypt(key);
+
+	for (int i = 0; i < len; i++)
+	{
+		plain = mscrypt.enc(plain);
+		cout << hex_to_bin(plain)[95];
+	}
+
+	cout << endl;
+}
+
 void print_help()
 {
 	cout << "Welcome to MSCrypt.\nBy Mahdi Salmanzadeh @2021\nmdsalmanzadeh@gmail.com\n\n"
-		"Usage: mscript [enc|dec|ofb|test] [in] [options]\n"
+		"Usage: mscript [enc|dec|ofb|stream|test] [...]\n"
 		"\nenc\t Encrypt a 96 bit block:\n"
 		"\t mscript enc key 96-bit-block\n"
-		"\t .\CryptoProject.exe enc 9182736591827365 123456FF1234123456123456\n"
+		"\t .\\MSCrypt.exe enc 9182736591827365 123456FF1234123456123456\n"
 		"\ndec\t Decrypt a 96 bit block:\n"
 		"\t mscript dec key 96-bit-block\n"
-		"\t .\CryptoProject.exe dec 9182736591827365 2b7d947662bfc65d45ae3790\n"
+		"\t .\\MSCrypt.exe dec 9182736591827365 2b7d947662bfc65d45ae3790\n"
 		"\nofb\t Encrypt/Decrypt a text in OFB mode:\n"
-		"\t mscript ofb key IV block\n"
+		"\t .\\MSCrypt.exe ofb key IV block\n"
+		"\nstream\t Create a random l-bit stream:\n"
+		"\t .\\MSCrypt.exe len\n"
 		"\ntest\t Perform completeness and strict avalanche criteria test:\n"
-		"\t mscript test [num_test_block=10000]\n"
-		"\n Note: Key is 64bit, IV is 96bit, Enter every value in hex.";
+		"\t .\\MSCrypt.exe test [num_test_block=10000]\n"
+		"\nNote: Key is 64bit, IV is 96bit, Enter every value in hex.\n\n";
 }
 
 int main(int argc, char** argv)
@@ -88,6 +100,8 @@ int main(int argc, char** argv)
 		dec(argv[2], argv[3]);
 	else if (string(argv[1]) == "ofb" && argc == 5)
 		ofb(argv[2], argv[3], argv[4]);
+	else if (string(argv[1]) == "stream" && argc == 3)
+		stream(stoul(argv[2]));
 	else
 		print_help();
 
