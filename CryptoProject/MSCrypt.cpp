@@ -112,12 +112,11 @@ string MSCrypt::dec(string cipher)
 string MSCrypt::ofb(string text)
 {
 	vector<string> plains = split(text, 24);
-	MSCrypt mscrpyt(key_);
 	string output_text = "", in = IV_;
 	
 	for (auto plain : plains)
 	{
-		in = mscrpyt.enc(in);
+		in = enc_block(in);
 		output_text += XOR(IV_, plain);
 	}
 
