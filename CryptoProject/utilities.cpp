@@ -180,6 +180,15 @@ string generate_random_96_bit() //@TODO -> not a good random )":
 	return merge(distrib(gen), distrib(gen), distrib(gen));
 }
 
+uint64_t generate_random_uint64()
+{
+	random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distrib(0, RAND_MAX);
+
+	return (distrib(gen) << 32) & distrib(gen);
+}
+
 uint32_t flip_bit(uint32_t in, int i)
 {
 	return in ^ (1 << i);

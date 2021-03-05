@@ -7,25 +7,25 @@ using namespace std;
 
 void enc(string key, string plain)
 {
-	MSCrypt mscrpyt(key);
+	MSCrypt mscrpyt(stoull(key, nullptr, 16));
 	cout << mscrpyt.enc(plain) << endl;
 }
 
 void dec(string key, string cipher)
 {
-	MSCrypt mscrpyt(key);
+	MSCrypt mscrpyt(stoull(key, nullptr, 16));
 	cout << mscrpyt.dec(cipher) << endl;
 }
 
 void ofb(string key, string IV, string text)
 {
-	MSCrypt mscrypt(key, IV, Mode::OFB);
+	MSCrypt mscrypt(stoull(key, nullptr, 16), IV, Mode::OFB);
 	cout << mscrypt.enc(text) << endl;
 }
 
 void completeness_avalanche_test(const int m)
 {
-	MSCrypt mscrypt(generate_random_96_bit());
+	MSCrypt mscrypt(generate_random_uint64());
 
 	size_t mat[96][96] = { 0 };
 
@@ -51,7 +51,7 @@ void completeness_avalanche_test(const int m)
 
 void stream(size_t len)
 {
-	auto key = generate_random_96_bit();
+	auto key = generate_random_uint64();
 	string plain = generate_random_96_bit();
 
 	MSCrypt mscrypt(key);

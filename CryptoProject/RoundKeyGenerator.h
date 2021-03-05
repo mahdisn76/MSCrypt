@@ -5,7 +5,7 @@ class RoundKeyGenerator
 {
 	uint32_t round_keys[12];
 	
-	int pc1[56] = {
+	const int pc1[56] = {
 	57,49,41,33,25,17,9,
 	1,58,50,42,34,26,18,
 	10,2,59,51,43,35,27,
@@ -16,7 +16,7 @@ class RoundKeyGenerator
 	21,13,5,28,20,12,4
 	};
 	
-	int pc2[48] = {
+	const int pc2[48] = {
 	14,17,11,24,1,5,
 	3,28,15,6,21,10,
 	23,19,12,4,26,8,
@@ -27,8 +27,12 @@ class RoundKeyGenerator
 	46,42,50,36,29,32
 	};
 
+	const uint8_t iteration_shifts[12] = { 
+	1,1,2,2,2,2,2,2,1,2,2,2 
+	};
+
 public:
-	RoundKeyGenerator(std::string key);
+	RoundKeyGenerator(uint64_t key);
 	uint32_t getEncRoundKey(int index);
 	uint32_t getDecRoundKey(int index);
 };

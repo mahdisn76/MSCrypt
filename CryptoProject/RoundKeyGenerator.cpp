@@ -3,58 +3,36 @@
 #include "RoundKeyGenerator.h"
 using namespace std;
 
-string shift_left_once(string key_chunk) {
-	string shifted = "";
-	for (int i = 1; i < 28; i++)
-		shifted += key_chunk[i];
-	
-	shifted += key_chunk[0];
-	return shifted;
-}
+constexpr auto LB64_MASK = 0x0000000000000001;
 
-string shift_left_twice(string key_chunk) {
-	string shifted = "";
-	for (int i = 0; i < 2; i++) 
-	{
-		for (int j = 1; j < 28; j++)
-			shifted += key_chunk[j];
-
-		shifted += key_chunk[0];
-		key_chunk = shifted;
-		shifted = "";
-	}
-	return key_chunk;
-}
-
-RoundKeyGenerator::RoundKeyGenerator(std::string key)
+RoundKeyGenerator::RoundKeyGenerator(uint64_t key)
 {
-	string perm_key = "";
-	for (int i = 0; i < 56; i++)
-		perm_key += key[pc1[i] - 1];
-
-	string left = perm_key.substr(0, 28);
-	string right = perm_key.substr(28, 28);
-
-	for (int i = 0; i < 12; i++) 
+	uint64_t permuted_choice_1 = 0;
+	for (auto i = 0; i < 56; i++)
 	{
-		if (i == 0 || i == 1 || i == 8 || i == 15)
+		permuted_choice_1 <<= 1;
+		permuted_choice_1 |= (key >> (64 - pc1[i]))& LB64_MASK;
+	}
+
+	uint32_t C = (uint32_t)((permuted_choice_1 >> 28) & 0x000000000fffffff);
+	uint32_t D = (uint32_t)(permuted_choice_1 & 0x000000000fffffff);
+
+	for (auto i = 0; i < 12; i++)
+	{
+		for (auto j = 0; j < iteration_shifts[i]; j++)
 		{
-			left = shift_left_once(left);
-			right = shift_left_once(right);
-		}
-		else
-		{
-			left = shift_left_twice(left);
-			right = shift_left_twice(right);
+			C = (0x0fffffff & (C << 1)) | (0x00000001 & (C >> 27));
+			D = (0x0fffffff & (D << 1)) | (0x00000001 & (D >> 27));
 		}
 
-		string combined_key = left + right;
-		string round_key = "";
+		uint64_t permuted_choice_2 = (((uint64_t)C) << 28) | (uint64_t)D;
 
-		for (int i = 0; i < 32; i++) 
-			round_key += combined_key[pc2[i] - 1];
-		
-		round_keys[i] = stoul(round_key, nullptr, 2);
+		round_keys[i] = 0;
+		for (auto j = 0; j < 32; j++)
+		{
+			round_keys[i] <<= 1;
+			round_keys[i] |= (permuted_choice_2 >> (56 - pc2[j]))& LB64_MASK;
+		}
 	}
 }
 

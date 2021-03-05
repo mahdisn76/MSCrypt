@@ -3,8 +3,8 @@
 #include "utilities.h"
 using namespace std;
 
-MSCrypt::MSCrypt(std::string key, std::string IV, Mode mode):
-	key_(hex_to_bin(key)), IV_(IV), mode_(mode)
+MSCrypt::MSCrypt(uint64_t key, std::string IV, Mode mode):
+	key_(key), IV_(IV), mode_(mode)
 {
 	rkGen_ = make_unique<RoundKeyGenerator>(key_);
 }

@@ -11,7 +11,7 @@ enum class Mode
 
 class MSCrypt
 {
-	std::string key_;
+	uint64_t key_;
 	std::string IV_;
 	Mode mode_;
 	std::unique_ptr<RoundKeyGenerator> rkGen_;
@@ -25,7 +25,7 @@ class MSCrypt
 
 
 public:
-	MSCrypt(std::string key, std::string IV = "", Mode mode = Mode::Block);
+	MSCrypt(uint64_t key, std::string IV = "", Mode mode = Mode::Block);
 	std::string enc(std::string plain);
 	std::string dec(std::string cipher);
 };
