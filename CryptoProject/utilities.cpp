@@ -196,7 +196,7 @@ uint64_t generate_random_uint64()
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> distrib(0, RAND_MAX);
 
-	return (distrib(gen) << 32) & distrib(gen);
+	return ((uint64_t)distrib(gen) << 32) & (uint64_t)distrib(gen);
 }
 
 uint32_t flip_bit(uint32_t in, int i)
